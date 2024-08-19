@@ -34,9 +34,9 @@
             },
             require: 'ngModel',
             templateUrl: 'multiselect.html',
-            controller: ['$scope', function($scope) {
+            controller: ['$scope', function ($scope) {
                 if (angular.isUndefined($scope.classesBtn)) {
-                    $scope.classesBtn = ['btn-block','btn-default'];
+                    $scope.classesBtn = ['btn-block', 'btn-default'];
                 }
             }],
             link: function ($scope, $element, $attrs, $ngModelCtrl) {
@@ -53,7 +53,6 @@
                 if (typeof $attrs.disabled != 'undefined') {
                     $scope.disabled = true;
                 }
-
 
                 var closeHandler = function (event) {
                     if (!$element[0].contains(event.target)) {
@@ -92,7 +91,7 @@
                     $scope.open = !$scope.open;
                     $scope.resolvedOptions = $scope.options;
                     updateSelectionLists();
-                };
+                }
 
                 $ngModelCtrl.$render = function () {
                     updateSelectionLists();
@@ -104,18 +103,22 @@
 
                 $ngModelCtrl.$isEmpty = function (value) {
                     if (value) {
-                        return (value.length === 0);
+                        return value.length === 0;
                     } else {
                         return true;
                     }
                 };
 
-                var watcher = $scope.$watch('selectedOptions', function () {
-                    $ngModelCtrl.$setViewValue(angular.copy($scope.selectedOptions));
-                }, true);
+                var watcher = $scope.$watch(
+                    'selectedOptions',
+                    function () {
+                        $ngModelCtrl.$setViewValue(angular.copy($scope.selectedOptions));
+                    },
+                    true
+                );
 
                 $scope.$on('$destroy', function () {
-                    $document.off('click', closeHandler);
+                    $document.off('click', closeHandler)
                     if (watcher) {
                         watcher(); // Clean watcher
                     }
@@ -128,13 +131,25 @@
                     if ($scope.selectedOptions && $scope.selectedOptions.length > 1) {
                         var totalSelected = angular.isDefined($scope.selectedOptions) ? $scope.selectedOptions.length : 0;
                         if (totalSelected === 0) {
-                            return $scope.labels && $scope.labels.select ? $scope.labels.select : ($scope.placeholder || 'Select');
+                            return $scope.labels && $scope.labels.select ? $scope.labels.select : $scope.placeholder || 'Select';
                         } else {
-                            return totalSelected + ' ' + ($scope.labels && $scope.labels.itemsSelected ? $scope.labels.itemsSelected : 'selected');
+                            return (
+                                totalSelected +
+                                ' ' +
+                                ($scope.labels && $scope.labels.itemsSelected ? $scope.labels.itemsSelected : 'selected')
+                            );
                         }
                     } else {
-                        return $scope.labels && $scope.labels.select ? $scope.labels.select : ($scope.placeholder || 'Select');
+                        return $scope.labels && $scope.labels.select ? $scope.labels.select : $scope.placeholder || 'Select';
                     }
+                };
+
+                $scope.getButtonCountText = function () {
+                    var totalOptions = angular.isDefined($scope.options) ? $scope.options.length : 100;
+                    var totalSelected = angular.isDefined($scope.selectedOptions) ? $scope.selectedOptions.length : 0;
+                    var counterLabel = totalSelected + ' / ' + totalOptions;
+
+                    return $scope.labels && $scope.labels.select ? counterLabel + ' ' + $scope.labels.select : counterLabel + ' ' + ($scope.placeholder || 'Select');
                 };
 
                 $scope.selectAll = function () {
@@ -152,11 +167,14 @@
                         $scope.selectedOptions = [];
                     }
                     var selectedIndex = $scope.selectedOptions.indexOf(item);
-                    var currentlySelected = (selectedIndex !== -1);
+                    var currentlySelected = selectedIndex !== -1;
                     if (currentlySelected) {
                         $scope.unselectedOptions.push($scope.selectedOptions[selectedIndex]);
                         $scope.selectedOptions.splice(selectedIndex, 1);
-                    } else if (!currentlySelected && ($scope.selectionLimit === 0 || $scope.selectedOptions.length < $scope.selectionLimit)) {
+                    } else if (
+                        !currentlySelected &&
+                        ($scope.selectionLimit === 0 || $scope.selectedOptions.length < $scope.selectionLimit)
+                    ) {
                         var unselectedIndex = $scope.unselectedOptions.indexOf(item);
                         $scope.unselectedOptions.splice(unselectedIndex, 1);
                         $scope.selectedOptions.push(item);
@@ -210,7 +228,7 @@
                 $scope.updateOptions = function () {
                     if (typeof $scope.options === 'function') {
                         $scope.options().then(function (resolvedOptions) {
-                            $scope.resolvedOptions = resolvedOptions;
+                            $scope.resolvedOptions = resolvedOptions
                             updateSelectionLists();
                         });
                     }
@@ -235,68 +253,73 @@
                         }
                     }
                 };
-
             }
         };
     }]);
-
 }());
 
-angular.module('btorfs.multiselect.templates', ['multiselect.html']);
+angular.module("btorfs.multiselect.templates", ["multiselect.html"]);
 
-angular.module("multiselect.html", []).run(["$templateCache", function ($templateCache) {
+angular.module("multiselect.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("multiselect.html",
-    "<div class=\"btn-group\" style=\"width: 100%\">\n" +
-    "    <button type=\"button\" class=\"btn dropdown-toggle\" ng-class=\"classesBtn\" ng-click=\"toggleDropdown()\" ng-disabled=\"disabled\" style=\"white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis;\">\n" +
-    "        {{getButtonText()}}&nbsp;<span class=\"caret\"></span>\n" +
+    "<div class=\"btn-group multiselect-block\" style=\"width: 100%\">\n" +
+    "    <button type=\"button\" class=\"btn dropdown-toggle\" ng-class=\"classesBtn\" ng-click=\"toggleDropdown()\"\n" +
+    "        ng-disabled=\"disabled\" style=\"white-space: nowrap; overflow-x: hidden; text-overflow: ellipsis\">\n" +
+    "        {{getButtonCountText()}}&nbsp;<span class=\"caret\"></span>\n" +
     "    </button>\n" +
-    "    <ul class=\"dropdown-menu dropdown-menu-form\"\n" +
-    "        ng-style=\"{display: open ? 'block' : 'none'}\" style=\"width: 100%; overflow-x: auto\">\n" +
     "\n" +
-    "        <li ng-show=\"showSelectAll\">\n" +
-    "            <a ng-click=\"selectAll()\" href=\"\">\n" +
-    "                <span class=\"glyphicon glyphicon-ok\"></span> {{labels.selectAll || 'Select All'}}\n" +
-    "            </a>\n" +
-    "        </li>\n" +
-    "        <li ng-show=\"showUnselectAll\">\n" +
-    "            <a ng-click=\"unselectAll()\" href=\"\">\n" +
-    "                <span class=\"glyphicon glyphicon-remove\"></span> {{labels.unselectAll || 'Unselect All'}}\n" +
-    "            </a>\n" +
-    "        </li>\n" +
-    "        <li ng-show=\"(showSelectAll || showUnselectAll)\"\n" +
-    "            class=\"divider\">\n" +
-    "        </li>\n" +
-    "\n" +
-    "        <li role=\"presentation\" ng-repeat=\"option in selectedOptions\" class=\"active\">\n" +
-    "            <a class=\"item-selected\" href=\"\" title=\"{{showTooltip ? getDisplay(option) : ''}}\" ng-click=\"toggleItem(option); $event.stopPropagation()\" style=\"overflow-x: hidden;text-overflow: ellipsis\">\n" +
-    "                <span class=\"glyphicon glyphicon-remove\"></span>\n" +
-    "                {{getDisplay(option)}}\n" +
-    "            </a>\n" +
-    "        </li>\n" +
-    "        <li ng-show=\"selectedOptions.length > 0\" class=\"divider\"></li>\n" +
-    "\n" +
+    "    <ul class=\"dropdown-menu dropdown-menu-form\" ng-style=\"{display: open ? 'block' : 'none'}\"\n" +
+    "        style=\"width: 100%; overflow-x: auto\">\n" +
     "        <li ng-show=\"showSearch\">\n" +
     "            <div class=\"dropdown-header\">\n" +
-    "                <input type=\"text\" class=\"form-control input-sm\" style=\"width: 100%;\"\n" +
-    "                       ng-model=\"searchFilter\" placeholder=\"{{labels.search || 'Search...'}}\" ng-change=\"updateOptions()\"/>\n" +
+    "                <input type=\"text\" class=\"form-control\" style=\"width: 100%\" ng-model=\"searchFilter\"\n" +
+    "                    placeholder=\"{{labels.search || 'Search...'}}\" ng-change=\"updateOptions()\" />\n" +
     "            </div>\n" +
     "        </li>\n" +
     "\n" +
     "        <li ng-show=\"showSearch\" class=\"divider\"></li>\n" +
+    "\n" +
+    "        <div class=\"multiselect-action\">\n" +
+    "            <li ng-show=\"showSelectAll\">\n" +
+    "                <a ng-click=\"selectAll()\" href=\"\">\n" +
+    "                    <span class=\"glyphicon glyphicon-ok\"></span> {{labels.selectAll || 'Select All'}}\n" +
+    "                </a>\n" +
+    "            </li>\n" +
+    "            <li ng-show=\"showUnselectAll\">\n" +
+    "                <a ng-click=\"unselectAll()\" href=\"\">\n" +
+    "                    <span class=\"glyphicon glyphicon-remove\"></span> {{labels.unselectAll || 'Unselect All'}}\n" +
+    "                </a>\n" +
+    "            </li>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <li ng-show=\"(showSelectAll || showUnselectAll)\" class=\"divider\"></li>\n" +
+    "\n" +
+    "        <li role=\"presentation\" ng-repeat=\"option in selectedOptions\" class=\"active\">\n" +
+    "            <a class=\"item-selected\" href=\"\" title=\"{{showTooltip ? getDisplay(option) : ''}}\"\n" +
+    "                ng-click=\"toggleItem(option); $event.stopPropagation()\"\n" +
+    "                style=\"overflow-x: hidden; text-overflow: ellipsis\">\n" +
+    "                <span class=\"glyphicon glyphicon-remove\"></span>\n" +
+    "                {{getDisplay(option)}}\n" +
+    "            </a>\n" +
+    "        </li>\n" +
+    "\n" +
+    "        <li ng-show=\"selectedOptions.length > 0\" class=\"divider selection-divider\"></li>\n" +
+    "\n" +
     "        <li role=\"presentation\" ng-repeat=\"option in unselectedOptions | filter:search() | limitTo: searchLimit\"\n" +
     "            ng-if=\"!isSelected(option)\"\n" +
     "            ng-class=\"{disabled : selectionLimit && selectedOptions.length >= selectionLimit}\">\n" +
-    "            <a class=\"item-unselected\" href=\"\" title=\"{{showTooltip ? getDisplay(option) : ''}}\" ng-click=\"toggleItem(option); $event.stopPropagation()\" style=\"overflow-x: hidden;text-overflow: ellipsis\">\n" +
+    "            <a class=\"item-unselected\" href=\"\" title=\"{{showTooltip ? getDisplay(option) : ''}}\"\n" +
+    "                ng-click=\"toggleItem(option); $event.stopPropagation()\"\n" +
+    "                style=\"overflow-x: hidden; text-overflow: ellipsis\">\n" +
     "                {{getDisplay(option)}}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "\n" +
     "        <li class=\"divider\" ng-show=\"selectionLimit > 1\"></li>\n" +
+    "\n" +
     "        <li role=\"presentation\" ng-show=\"selectionLimit > 1\">\n" +
     "            <a>{{selectedOptions.length || 0}} / {{selectionLimit}} {{labels.itemsSelected || 'selected'}}</a>\n" +
     "        </li>\n" +
-    "\n" +
     "    </ul>\n" +
-    "</div>\n" +
-    "");
+    "</div>");
 }]);

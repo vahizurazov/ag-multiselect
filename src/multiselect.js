@@ -34,9 +34,9 @@
             },
             require: 'ngModel',
             templateUrl: 'multiselect.html',
-            controller: function($scope) {
+            controller: function ($scope) {
                 if (angular.isUndefined($scope.classesBtn)) {
-                    $scope.classesBtn = ['btn-block','btn-default'];
+                    $scope.classesBtn = ['btn-block', 'btn-default'];
                 }
             },
             link: function ($scope, $element, $attrs, $ngModelCtrl) {
@@ -53,7 +53,6 @@
                 if (typeof $attrs.disabled != 'undefined') {
                     $scope.disabled = true;
                 }
-
 
                 var closeHandler = function (event) {
                     if (!$element[0].contains(event.target)) {
@@ -92,7 +91,7 @@
                     $scope.open = !$scope.open;
                     $scope.resolvedOptions = $scope.options;
                     updateSelectionLists();
-                };
+                }
 
                 $ngModelCtrl.$render = function () {
                     updateSelectionLists();
@@ -104,18 +103,22 @@
 
                 $ngModelCtrl.$isEmpty = function (value) {
                     if (value) {
-                        return (value.length === 0);
+                        return value.length === 0;
                     } else {
                         return true;
                     }
                 };
 
-                var watcher = $scope.$watch('selectedOptions', function () {
-                    $ngModelCtrl.$setViewValue(angular.copy($scope.selectedOptions));
-                }, true);
+                var watcher = $scope.$watch(
+                    'selectedOptions',
+                    function () {
+                        $ngModelCtrl.$setViewValue(angular.copy($scope.selectedOptions));
+                    },
+                    true
+                );
 
                 $scope.$on('$destroy', function () {
-                    $document.off('click', closeHandler);
+                    $document.off('click', closeHandler)
                     if (watcher) {
                         watcher(); // Clean watcher
                     }
@@ -128,13 +131,25 @@
                     if ($scope.selectedOptions && $scope.selectedOptions.length > 1) {
                         var totalSelected = angular.isDefined($scope.selectedOptions) ? $scope.selectedOptions.length : 0;
                         if (totalSelected === 0) {
-                            return $scope.labels && $scope.labels.select ? $scope.labels.select : ($scope.placeholder || 'Select');
+                            return $scope.labels && $scope.labels.select ? $scope.labels.select : $scope.placeholder || 'Select';
                         } else {
-                            return totalSelected + ' ' + ($scope.labels && $scope.labels.itemsSelected ? $scope.labels.itemsSelected : 'selected');
+                            return (
+                                totalSelected +
+                                ' ' +
+                                ($scope.labels && $scope.labels.itemsSelected ? $scope.labels.itemsSelected : 'selected')
+                            );
                         }
                     } else {
-                        return $scope.labels && $scope.labels.select ? $scope.labels.select : ($scope.placeholder || 'Select');
+                        return $scope.labels && $scope.labels.select ? $scope.labels.select : $scope.placeholder || 'Select';
                     }
+                };
+
+                $scope.getButtonCountText = function () {
+                    var totalOptions = angular.isDefined($scope.options) ? $scope.options.length : 100;
+                    var totalSelected = angular.isDefined($scope.selectedOptions) ? $scope.selectedOptions.length : 0;
+                    var counterLabel = totalSelected + ' / ' + totalOptions;
+
+                    return $scope.labels && $scope.labels.select ? counterLabel + ' ' + $scope.labels.select : counterLabel + ' ' + ($scope.placeholder || 'Select');
                 };
 
                 $scope.selectAll = function () {
@@ -152,11 +167,14 @@
                         $scope.selectedOptions = [];
                     }
                     var selectedIndex = $scope.selectedOptions.indexOf(item);
-                    var currentlySelected = (selectedIndex !== -1);
+                    var currentlySelected = selectedIndex !== -1;
                     if (currentlySelected) {
                         $scope.unselectedOptions.push($scope.selectedOptions[selectedIndex]);
                         $scope.selectedOptions.splice(selectedIndex, 1);
-                    } else if (!currentlySelected && ($scope.selectionLimit === 0 || $scope.selectedOptions.length < $scope.selectionLimit)) {
+                    } else if (
+                        !currentlySelected &&
+                        ($scope.selectionLimit === 0 || $scope.selectedOptions.length < $scope.selectionLimit)
+                    ) {
                         var unselectedIndex = $scope.unselectedOptions.indexOf(item);
                         $scope.unselectedOptions.splice(unselectedIndex, 1);
                         $scope.selectedOptions.push(item);
@@ -210,7 +228,7 @@
                 $scope.updateOptions = function () {
                     if (typeof $scope.options === 'function') {
                         $scope.options().then(function (resolvedOptions) {
-                            $scope.resolvedOptions = resolvedOptions;
+                            $scope.resolvedOptions = resolvedOptions
                             updateSelectionLists();
                         });
                     }
@@ -235,9 +253,7 @@
                         }
                     }
                 };
-
             }
         };
     });
-
 }());
