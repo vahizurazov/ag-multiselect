@@ -4,7 +4,7 @@ var arr = [
   { id: '0000-002', accountName: 'Lol2' },
 ]
 
-angular.module('myApp', ['btorfs.multiselectQuestions']).controller('myController', function ($scope) {
+angular.module('myApp', ['btorfs.multiselectDifficulties']).controller('myController', function ($scope) {
   $scope.message = 'Hello, AngularJS!'
   $scope.accessibleAccounts = [...arr]
   $scope.accessibleAccountsSelected = [arr[0]]

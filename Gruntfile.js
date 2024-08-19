@@ -31,7 +31,7 @@ module.exports = function (grunt) {
           singleQuotes: true,
         },
         files: {
-          'dist/angular-bootstrap-multiselect-questions.js': 'dist/angular-bootstrap-multiselect-questions.js',
+          'dist/angular-bootstrap-multiselect-difficulties.js': 'dist/angular-bootstrap-multiselect-difficulties.js',
         },
       },
     },
@@ -65,26 +65,26 @@ module.exports = function (grunt) {
     html2js: {
       options: {
         base: 'src',
-        module: 'btorfs.multiselectQuestions.templates',
+        module: 'btorfs.multiselectDifficulties.templates',
       },
       main: {
         src: ['src/**/*.html'],
-        dest: 'dist/angular-bootstrap-multiselect-templates-questions.js',
+        dest: 'dist/angular-bootstrap-multiselect-templates-difficulties.js',
       },
     },
 
     concat: {
       options: {},
       files: {
-        src: ['src/**/*.js', 'dist/angular-bootstrap-multiselect-templates-questions.js'],
-        dest: 'dist/angular-bootstrap-multiselect-questions.js',
+        src: ['src/**/*.js', 'dist/angular-bootstrap-multiselect-templates-difficulties.js'],
+        dest: 'dist/angular-bootstrap-multiselect-difficulties.js',
       },
     },
 
     uglify: {
       files: {
-        src: 'dist/angular-bootstrap-multiselect-questions.js',
-        dest: 'dist/angular-bootstrap-multiselect-questions.min.js',
+        src: 'dist/angular-bootstrap-multiselect-difficulties.js',
+        dest: 'dist/angular-bootstrap-multiselect-difficulties.min.js',
       },
     },
 

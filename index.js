@@ -1,2 +1,2 @@
-require('./dist/angular-bootstrap-multiselect-questions');
-module.exports = 'btorfs.multiselectQuestions';
+require('./dist/angular-bootstrap-multiselect-difficulties');
+module.exports = 'btorfs.multiselectDifficulties';

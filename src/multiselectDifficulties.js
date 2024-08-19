@@ -1,9 +1,9 @@
 (function () {
     'use strict';
 
-    var multiselectQuestions = angular.module('btorfs.multiselectQuestions', ['btorfs.multiselectQuestions.templates']);
+    var multiselectDifficulties = angular.module('btorfs.multiselectDifficulties', ['btorfs.multiselectDifficulties.templates']);
 
-    multiselectQuestions.getRecursiveProperty = function (object, path) {
+    multiselectDifficulties.getRecursiveProperty = function (object, path) {
         return path.split('.').reduce(function (object, x) {
             if (object) {
                 return object[x];
@@ -13,7 +13,7 @@
         }, object)
     };
 
-    multiselectQuestions.directive('multiselectQuestions', function ($filter, $document, $log) {
+    multiselectDifficulties.directive('multiselectDifficulties', function ($filter, $document, $log) {
         return {
             restrict: 'AE',
             scope: {
@@ -33,7 +33,7 @@
                 placeholder: '@?'
             },
             require: 'ngModel',
-            templateUrl: 'multiselectQuestions.html',
+            templateUrl: 'multiselectDifficulties.html',
             controller: function ($scope) {
                 if (angular.isUndefined($scope.classesBtn)) {
                     $scope.classesBtn = ['btn-block', 'btn-default'];
@@ -186,7 +186,7 @@
                         return item;
                     } else if (angular.isObject(item)) {
                         if ($scope.idProp) {
-                            return multiselectQuestions.getRecursiveProperty(item, $scope.idProp);
+                            return multiselectDifficulties.getRecursiveProperty(item, $scope.idProp);
                         } else {
                             $log.error('Multiselect: when using objects as model, a idProp value is mandatory.');
                             return '';
@@ -201,7 +201,7 @@
                         return item;
                     } else if (angular.isObject(item)) {
                         if ($scope.displayProp) {
-                            return multiselectQuestions.getRecursiveProperty(item, $scope.displayProp);
+                            return multiselectDifficulties.getRecursiveProperty(item, $scope.displayProp);
                         } else {
                             $log.error('Multiselect: when using objects as model, a displayProp value is mandatory.');
                             return '';
